@@ -439,7 +439,10 @@ digit_hex($f) -> 15.
 finish_number(Acc, Rest) ->
     Str = lists:reverse(Acc),
     {case catch list_to_integer(Str) of
-	 {'EXIT', _} -> list_to_float(Str);
+	 {'EXIT', _} -> %list_to_float(Str);
+	     % have had this blow up [cw@cotweet.com 3/9/2010]:
+	     case catch list_to_float(Str) of
+		 {'EXIT', _} -> Str; F -> F end;
 	 Value -> Value
      end, Rest}.
 
